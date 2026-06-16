@@ -9,23 +9,23 @@
     <!-- Formulario de Autenticación -->
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
       
-      <!-- Campo: Usuario / Correo -->
+      <!-- Campo: Correo -->
       <div class="form-group">
-        <label for="username">Usuario o Correo Electrónico</label>
+        <label for="correo">Correo Electrónico</label>
         <div class="input-wrapper">
-          <span class="input-icon">👤</span>
+          <span class="input-icon">📧</span>
           <input 
-            type="text" 
-            id="username" 
-            name="username" 
-            [(ngModel)]="credentials.username" 
+            type="email" 
+            id="correo" 
+            name="correo" 
+            [(ngModel)]="credentials.correo" 
             required 
-            #usernameField="ngModel"
+            #correoField="ngModel"
             placeholder="ejemplo@correo.com"
-            [class.input-error]="usernameField.invalid && usernameField.touched">
+            [class.input-error]="correoField.invalid && correoField.touched">
         </div>
-        @if (usernameField.invalid && usernameField.touched) {
-          <small class="error-text">El usuario es obligatorio para la validación.</small>
+        @if (correoField.invalid && correoField.touched) {
+          <small class="error-text">El correo es obligatorio.</small>
         }
       </div>
 
@@ -57,8 +57,12 @@
       }
 
       <!-- Botón de Envío -->
-      <button type="submit" class="btn-login" [disabled]="loginForm.invalid">
-        🔒 Iniciar Sesión Seguro
+      <button type="submit" class="btn-login" [disabled]="loginForm.invalid || isLoading">
+        @if (isLoading) {
+          ⏳ Iniciando sesión...
+        } @else {
+          🔒 Iniciar Sesión Seguro
+        }
       </button>
 
     </form>

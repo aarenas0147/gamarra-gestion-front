@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
@@ -13,29 +14,51 @@ import { Router, RouterModule } from '@angular/router';
 export class LoginComponent {
   
   public credentials = {
-    username: '',
+    correo: '',
     password: ''
   };
 
   public errorMessage: string | null = null;
+  public isLoading: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: Auth) {}
 
   public onSubmit(): void {
-    this.errorMessage = null; // Limpiar errores previos
+    this.errorMessage = null;
+    this.isLoading = true;
 
-    // Simulación académica de control de accesos basado en roles directos
-    if (this.credentials.username.trim() === 'admin' && this.credentials.password === 'admin123') {
-      console.log('Acceso concedido: Rol Administrador');
-      this.router.navigate(['/admin']); // Redirecciona a la ruta de analítica y reportes
-    } 
-    else if (this.credentials.username.trim() === 'almacen' && this.credentials.password === 'almacen123') {
-      console.log('Acceso concedido: Rol Encargado de Almacén');
-      this.router.navigate(['/almacen']); // Redirecciona a la ruta de control de stock y Kardex
-    } 
-    else {
-      // Si las credenciales no coinciden con los roles de simulación de la rúbrica
-      this.errorMessage = "Credenciales incorrectas para el entorno de evaluación. Use 'admin/admin123' o 'almacen/almacen123'.";
+    if (!this.credentials.correo || !this.credentials.password) {
+      this.errorMessage = 'Por favor ingresa el correo y la contraseña';
+      this.isLoading = false;
+      return;
     }
+
+    this.authService.login(this.credentials).subscribe({
+      next: (response) => {
+        console.log('Autenticación exitosa:', response);
+        // Guardar el token si es necesario
+        if (response.token) {
+          localStorage.setItem('authToken', response.token);
+        }
+        // Guardar datos del usuario
+        if (response.usuario) {
+          localStorage.setItem('usuario', JSON.stringify(response.usuario));
+        }
+        // Redirecciona según el rol
+        if (response.rol === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else if (response.rol === 'ALMACEN') {
+          this.router.navigate(['/almacen']);
+        } else {
+          this.router.navigate(['/']);
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error en login:', error);
+        this.errorMessage = error.error?.mensaje || 'Correo o contraseña incorrectos';
+        this.isLoading = false;
+      }
+    });
   }
 }
