@@ -1,1 +1,106 @@
-<p>almacen-dashboard works!</p>
+<div class="dashboard-layout">
+  
+  <aside class="sidebar">
+    <div class="sidebar-brand">📦 Almacén Gamarra</div>
+    <nav class="sidebar-menu">
+      <button class="menu-item active">📊 Kardex General</button>
+      <button class="menu-item">📥 Registrar Entrada</button>
+      <button class="menu-item">📤 Salidas / Mermas</button>
+      <button class="menu-item">⚙️ Ajuste de Stock</button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" (click)="logout()">🚪 Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+    
+    <header class="main-header">
+      <div class="header-title">
+        <h1>Panel de Control de Inventario</h1>
+        <p>Bienvenido, Encargado de Almacén • Operando en Tiempo Real</p>
+      </div>
+      <button class="btn-refresh" (click)="inicializarInventario()">🔄 Sincronizar Stock</button>
+    </header>
+
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-icon">👕</span>
+        <div class="metric-data">
+          <h3>Total Prendas</h3>
+          <p class="metric-value">{{ totalPrendas }} u.</p>
+        </div>
+      </div>
+      <div class="metric-card alert">
+        <span class="metric-icon">⚠️</span>
+        <div class="metric-data">
+          <h3>Stock Crítico</h3>
+          <p class="metric-value">{{ prendasCriticas }} SKU</p>
+        </div>
+        <small class="alert-legend">Requiere orden de producción</small>
+      </div>
+      <div class="metric-card success">
+        <span class="metric-icon">✅</span>
+        <div class="metric-data">
+          <h3>Líneas Activas</h3>
+          <p class="metric-value">3 (D/C/N)</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-card">
+      <div class="card-header-actions">
+        <h2>Existencias Físicas en Galería</h2>
+        <input 
+          type="text" 
+          placeholder="Filtrar por prenda, talla o material..." 
+          class="search-table">
+      </div>
+
+      <div class="table-responsive">
+        <table class="kardex-table">
+          <thead>
+            <tr>
+              <th>SKU ID</th>
+              <th>Prenda</th>
+              <th>Material</th>
+              <th>Talla</th>
+              <th>Color</th>
+              <th>Stock Actual</th>
+              <th>Estado Logístico</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of listaInventario; track item.sku) {
+              <tr [class.row-alert]="item.stock <= item.stockMinimo">
+                <td><code>{{ item.sku }}</code></td>
+                <td><strong>{{ item.nombre }}</strong></td>
+                <td>{{ item.material }}</td>
+                <td><span class="badge-talla">{{ item.talla }}</span></td>
+                <td>{{ item.color }}</td>
+                <td>{{ item.stock }} unidades</td>
+                <td>
+                  @if (item.stock === 0) {
+                    <span class="status-badge danger">Agotado</span>
+                  } @else if (item.stock <= item.stockMinimo) {
+                    <span class="status-badge warning">Stock Bajo</span>
+                  } @else {
+                    <span class="status-badge success">Abastecido</span>
+                  }
+                </td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-action edit" title="Ajustar stock">✏️</button>
+                    <button class="btn-action history" title="Ver movimientos">📜</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>

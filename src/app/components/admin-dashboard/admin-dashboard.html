@@ -1,1 +1,59 @@
-<p>admin-dashboard works!</p>
+<div class="dashboard-container">
+  <div class="kpi-grid">
+    <div class="card kpi-card revenue">
+      <h3>Ventas del Día</h3>
+      <p class="metric-value">S/ 2,450.00</p>
+      <span class="trend positive">▲ +12% vs ayer</span>
+    </div>
+
+    <div class="card kpi-card volume">
+      <h3>Prendas Vendidas</h3>
+      <p class="metric-value">120 und.</p>
+      <span class="trend">Textil Nacional</span>
+    </div>
+
+    <div class="card kpi-card alerts-stock">
+      <h3>Alertas de Stock Crítico</h3>
+      <p class="metric-value warning">4</p>
+      <span class="trend negative">Requiere reabastecimiento</span>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <div class="card chart-section">
+      <h2>Top 5: Prendas Más Demandadas</h2>
+      <div class="chart-placeholder">
+        <div class="bar-row">
+          <span>Polo Algodón Jersey (M - Negro)</span>
+          <div class="bar-wrapper"><div class="bar animate-bar" style="width: 85%;">85 und.</div></div>
+        </div>
+        <div class="bar-row">
+          <span>Casaca Denim (L - Azul)</span>
+          <div class="bar-wrapper"><div class="bar animate-bar" style="width: 60%;">60 und.</div></div>
+        </div>
+        <div class="bar-row">
+          <span>Polera Oversize (S - Gris)</span>
+          <div class="bar-wrapper"><div class="bar animate-bar" style="width: 40%;">40 und.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card stock-section">
+      <h2>⚠️ Reposición Urgente (Almacén)</h2>
+      <ul class="stock-list">
+        <li class="stock-item critical">
+          <span class="item-name">Jeans Slim Fit - Talla 30 (Azul)</span>
+          <span class="item-badge">Quedan 3 und.</span>
+        </li>
+        <li class="stock-item critical">
+          <span class="item-name">Polo Pima Premium - Talla S (Blanco)</span>
+          <span class="item-badge">Quedan 5 und.</span>
+        </li>
+        <li class="stock-item warning">
+          <span class="item-name">Casaca Bomber - Talla XL (Verde)</span>
+          <span class="item-badge">Quedan 9 und.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

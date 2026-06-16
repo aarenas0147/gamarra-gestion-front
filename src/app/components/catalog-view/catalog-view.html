@@ -1,1 +1,87 @@
-<p>catalog-view works!</p>
+<div class="store-container">
+  
+  <!-- NAV BAR SUPERIOR DE LA TIENDA -->
+  <header class="store-navbar">
+    <div class="store-logo">📦 GamarraGestión Modas</div>
+    <div class="store-search">
+      <input type="text" placeholder="¿Qué prenda estás buscando hoy?">
+    </div>
+    <div class="store-user-actions">
+      <button class="btn-login btn-text" routerLink="/login">👤 Iniciar Sesión</button>
+      <div class="cart-icon-wrapper">
+        <button class="btn-cart">🛒 Mi Carrito</button>
+        @if (cantidadCarrito > 0) {
+          <span class="cart-badge animate-pop">{{ cantidadCarrito }}</span>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- CUERPO PRINCIPAL: FILTROS + VITRINA -->
+  <div class="store-layout">
+    
+    <!-- Filtros Laterales Izquierdos -->
+    <aside class="store-filters card">
+      <h3>Filtrar Por</h3>
+      <hr>
+      <div class="filter-section">
+        <h4>Línea Textil</h4>
+        <label><input type="checkbox"> Damas</label>
+        <label><input type="checkbox"> Caballeros</label>
+        <label><input type="checkbox"> Niños</label>
+      </div>
+      <div class="filter-section">
+        <h4>Prenda</h4>
+        <label><input type="checkbox"> Polos</label>
+        <label><input type="checkbox"> Jeans</label>
+        <label><input type="checkbox"> Poleras</label>
+      </div>
+      <div class="filter-section">
+        <h4>Talla</h4>
+        <div class="talla-options">
+          <button class="btn-talla-chip">S</button>
+          <button class="btn-talla-chip active">M</button>
+          <button class="btn-talla-chip">L</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Vitrina de Productos -->
+    <main class="store-gallery">
+      <div class="gallery-grid">
+        @for (item of catalogo; track item.id_producto) {
+          <div class="product-showcase-card" [class.blur-out]="item.stock_actual === 0">
+            
+            <!-- Etiqueta condicional de Agotado para control lógico de UI -->
+            @if (item.stock_actual === 0) {
+              <span class="ribbon-sold-out">Agotado</span>
+            }
+
+            <div class="product-img-placeholder">
+              <!-- Reemplazar con directiva [src] cuando se integre el CDN de fotos -->
+              <span class="img-label">📸 {{ item.nombre_corto }}</span>
+            </div>
+
+            <div class="product-showcase-body">
+              <span class="product-brand">Confección Nacional</span>
+              <h3>{{ item.nombre }}</h3>
+              <p class="product-specs">{{ item.material }} • Talla {{ item.talla }}</p>
+              
+              <div class="product-showcase-footer">
+                <span class="product-showcase-price">S/ {{ item.precio_venta.toFixed(2) }}</span>
+                
+                @if (item.stock_actual > 0) {
+                  <button class="btn-add-store" (click)="agregarAlCarrito()">Agregar</button>
+                } @else {
+                  <button class="btn-add-store disabled" disabled>Sin Stock</button>
+                }
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+    </main>
+
+  </div>
+</div>

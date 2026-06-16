@@ -1,0 +1,73 @@
+<div class="inventario-container">
+  <!-- Cabecera y Filtros -->
+  <div class="inventory-header">
+    <div class="search-box">
+      <input type="text" placeholder="Buscar por nombre o código SKU..." (input)="filtrarProductos($event)">
+    </div>
+    
+    <div class="filter-group">
+      <select name="categoria">
+        <option value="">Todas las Categorías</option>
+        <option value="polos">Polos</option>
+        <option value="jeans">Jeans</option>
+        <option value="poleras">Poleras</option>
+      </select>
+      <select name="talla">
+        <option value="">Talla</option>
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="30">30</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" (click)="abrirModal()">
+      <span>+</span> Nueva Prenda
+    </button>
+  </div>
+
+  <!-- Tabla del Catálogo Textil -->
+  <div class="table-responsive card">
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th>Código SKU</th>
+          <th>Prenda</th>
+          <th>Categoría</th>
+          <th>Talla</th>
+          <th>Color</th>
+          <th>Material</th>
+          <th>Precio Venta</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (prod of listaProductos; track prod.id_producto) {
+          <tr>
+            <td class="sku-text">{{ prod.codigo_barra }}</td>
+            <td class="product-name"><strong>{{ prod.nombre }}</strong></td>
+            <td>{{ prod.categoria }}</td>
+            <td><span class="badge-talla">{{ prod.talla }}</span></td>
+            <td>{{ prod.color }}</td>
+            <td>{{ prod.material }}</td>
+            <td class="price-text">S/ {{ prod.precio_venta.toFixed(2) }}</td>
+            <td>
+              <!-- Semáforo visual dinámico según niveles de stock crítico -->
+              <span class="stock-badge" [ngClass]="{
+                'stock-danger': prod.stock_actual <= prod.stock_minimo,
+                'stock-warning': prod.stock_actual > prod.stock_minimo && prod.stock_actual <= prod.stock_minimo + 10,
+                'stock-success': prod.stock_actual > prod.stock_minimo + 10
+              }">
+                {{ prod.stock_actual }} und.
+              </span>
+            </td>
+            <td>
+              <button class="btn-icon" title="Editar Prenda">📝</button>
+              <button class="btn-icon delete" title="Dar de baja">🗑️</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

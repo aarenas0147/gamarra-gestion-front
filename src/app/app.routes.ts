@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { CatalogViewComponent } from './components/catalog-view/catalog-view';
 import { LoginComponent } from './components/login/login';
 import { AlmacenDashboardComponent } from './components/almacen-dashboard/almacen-dashboard';
-import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 
 export const routes: Routes = [
   // Ruta pública por defecto: El catálogo textil para los clientes de Gamarra

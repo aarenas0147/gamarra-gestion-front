@@ -1,0 +1,93 @@
+<div class="pos-container">
+  
+  <!-- PANEL IZQUIERDO: Catálogo y Búsqueda Rápida -->
+  <div class="pos-catalog-panel">
+    <div class="pos-search-bar">
+      <input type="text" placeholder="Enfoque aquí para escanear SKU o escribir nombre de la prenda..." #skuInput (keyup.enter)="buscarPorSku(skuInput.value); skuInput.value=''">
+    </div>
+
+    <div class="pos-products-grid">
+      @for (prod of productosRapidos; track prod.id_producto) {
+        <div class="product-pos-card" [ngClass]="{'out-of-stock': prod.stock_actual <= 0}" (click)="agregarAlCarrito(prod)">
+          <div class="product-pos-info">
+            <span class="product-pos-sku">{{ prod.codigo_barra }}</span>
+            <span class="product-pos-title">{{ prod.nombre }}</span>
+            <span class="product-pos-specs">Talla: {{ prod.talla }} | {{ prod.color }}</span>
+          </div>
+          <div class="product-pos-footer">
+            <span class="product-pos-price">S/ {{ prod.precio_venta.toFixed(2) }}</span>
+            <span class="product-pos-stock" [class.low-stock]="prod.stock_actual <= 5">Stock: {{ prod.stock_actual }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- PANEL DERECHO: Carrito de Compras y Caja -->
+  <div class="pos-checkout-panel card">
+    <div class="checkout-header">
+      <h2>Detalle de la Operación</h2>
+      <div class="client-selector">
+        <select [(ngModel)]="tipoDocumento">
+          <option value="BOLETA">Boleta de Venta</option>
+          <option value="FACTURA">Factura (RUC)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Lista de artículos agregados -->
+    <div class="checkout-items-list">
+      @if (carrito.length === 0) {
+        <div class="empty-cart-message">
+          <p>El carrito está vacío. Escanee prendas para iniciar.</p>
+        </div>
+      } @else {
+        @for (item of carrito; track item.producto.id_producto) {
+          <div class="checkout-item-row">
+            <div class="item-desc">
+              <span><strong>{{ item.producto.nombre }}</strong></span>
+              <small>Talla {{ item.producto.talla }} - {{ item.producto.color }}</small>
+            </div>
+            <div class="item-qty-control">
+              <button (click)="modificarCantidad(item, -1)">-</button>
+              <span class="qty-number">{{ item.cantidad }}</span>
+              <button (click)="modificarCantidad(item, 1)">+</button>
+            </div>
+            <div class="item-subtotal">
+              <span>S/ {{ (item.producto.precio_venta * item.cantidad).toFixed(2) }}</span>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Totales y Métodos de Pago -->
+    <div class="checkout-summary">
+      <div class="summary-row">
+        <span>Subtotal (Sin Impuestos)</span>
+        <span>S/ {{ calcularSubtotal().toFixed(2) }}</span>
+      </div>
+      <div class="summary-row">
+        <span>IGV (18%)</span>
+        <span>S/ {{ calcularIgv().toFixed(2) }}</span>
+      </div>
+      <div class="summary-row total-row">
+        <span>TOTAL A PAGAR</span>
+        <span>S/ {{ calcularTotal().toFixed(2) }}</span>
+      </div>
+
+      <div class="payment-methods">
+        <label>Forma de Pago:</label>
+        <div class="radio-group">
+          <button type="button" class="btn-pay-method" [class.active]="metodoPago === 'EFECTIVO'" (click)="metodoPago = 'EFECTIVO'">💵 Efectivo</button>
+          <button type="button" class="btn-pay-method" [class.active]="metodoPago === 'DIGITAL'" (click)="metodoPago = 'DIGITAL'">📱 Yape/Plin</button>
+        </div>
+      </div>
+
+      <button class="btn-success-pos" [disabled]="carrito.length === 0" (click)="procesarTransaccion()">
+        🛒 Confirmar Venta e Imprimir Comprobante
+      </button>
+    </div>
+  </div>
+
+</div>
