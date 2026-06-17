@@ -1,87 +1,210 @@
-<div class="store-container">
-  
-  <!-- NAV BAR SUPERIOR DE LA TIENDA -->
-  <header class="store-navbar">
-    <div class="store-logo">📦 GamarraGestión Modas</div>
-    <div class="store-search">
-      <input type="text" placeholder="¿Qué prenda estás buscando hoy?">
-    </div>
-    <div class="store-user-actions">
-      <button class="btn-login btn-text" routerLink="/login">👤 Iniciar Sesión</button>
-      <div class="cart-icon-wrapper">
-        <button class="btn-cart">🛒 Mi Carrito</button>
-        @if (cantidadCarrito > 0) {
-          <span class="cart-badge animate-pop">{{ cantidadCarrito }}</span>
-        }
+<div class="catalog-wrapper">
+
+  <!-- ══════════════════ NAVBAR ══════════════════ -->
+  <header class="catalog-navbar">
+    <div class="navbar-inner">
+
+      <div class="navbar-brand">
+        <span class="brand-icon">G</span>
+        <span class="brand-name">Gamarra<strong>Gestión</strong></span>
       </div>
+
+      <div class="navbar-search">
+        <div class="search-box">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input
+            class="search-input"
+            placeholder="Buscar prenda, modelo o color..."
+            (input)="onBusqueda($event)"
+          />
+          @if (terminoBusqueda()) {
+            <button class="search-clear" (click)="limpiarBusqueda()">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="navbar-actions">
+        <button mat-button routerLink="/login" class="btn-login-nav">
+          <mat-icon>person_outline</mat-icon>
+          <span class="btn-label">Iniciar Sesión</span>
+        </button>
+
+        <button
+          mat-icon-button
+          class="btn-cart-nav"
+          [matBadge]="cantidadCarrito()"
+          [matBadgeHidden]="cantidadCarrito() === 0"
+          matBadgeColor="warn"
+          matTooltip="Ver carrito"
+        >
+          <mat-icon>shopping_cart</mat-icon>
+        </button>
+      </div>
+
     </div>
   </header>
 
-  <!-- CUERPO PRINCIPAL: FILTROS + VITRINA -->
-  <div class="store-layout">
-    
-    <!-- Filtros Laterales Izquierdos -->
-    <aside class="store-filters card">
-      <h3>Filtrar Por</h3>
-      <hr>
-      <div class="filter-section">
-        <h4>Línea Textil</h4>
-        <label><input type="checkbox"> Damas</label>
-        <label><input type="checkbox"> Caballeros</label>
-        <label><input type="checkbox"> Niños</label>
-      </div>
-      <div class="filter-section">
-        <h4>Prenda</h4>
-        <label><input type="checkbox"> Polos</label>
-        <label><input type="checkbox"> Jeans</label>
-        <label><input type="checkbox"> Poleras</label>
-      </div>
-      <div class="filter-section">
-        <h4>Talla</h4>
-        <div class="talla-options">
-          <button class="btn-talla-chip">S</button>
-          <button class="btn-talla-chip active">M</button>
-          <button class="btn-talla-chip">L</button>
-        </div>
-      </div>
-    </aside>
+  <!-- ══════════════════ LAYOUT PRINCIPAL ══════════════════ -->
+  <div class="catalog-layout">
 
-    <!-- Vitrina de Productos -->
-    <main class="store-gallery">
-      <div class="gallery-grid">
-        @for (item of catalogo; track item.id_producto) {
-          <div class="product-showcase-card" [class.blur-out]="item.stock_actual === 0">
-            
-            <!-- Etiqueta condicional de Agotado para control lógico de UI -->
-            @if (item.stock_actual === 0) {
-              <span class="ribbon-sold-out">Agotado</span>
-            }
+    <!-- ── FILTROS LATERALES ── -->
+    <aside class="catalog-filters">
 
-            <div class="product-img-placeholder">
-              <!-- Reemplazar con directiva [src] cuando se integre el CDN de fotos -->
-              <span class="img-label">📸 {{ item.nombre_corto }}</span>
-            </div>
-
-            <div class="product-showcase-body">
-              <span class="product-brand">Confección Nacional</span>
-              <h3>{{ item.nombre }}</h3>
-              <p class="product-specs">{{ item.material }} • Talla {{ item.talla }}</p>
-              
-              <div class="product-showcase-footer">
-                <span class="product-showcase-price">S/ {{ item.precio_venta.toFixed(2) }}</span>
-                
-                @if (item.stock_actual > 0) {
-                  <button class="btn-add-store" (click)="agregarAlCarrito()">Agregar</button>
-                } @else {
-                  <button class="btn-add-store disabled" disabled>Sin Stock</button>
-                }
-              </div>
-            </div>
-
-          </div>
+      <div class="filter-header">
+        <span class="filter-title">Filtros</span>
+        @if (tallaSeleccionada() || categoriaSeleccionada() || terminoBusqueda()) {
+          <button mat-button color="warn" (click)="limpiarFiltros()" class="btn-clear">
+            Limpiar
+          </button>
         }
       </div>
-    </main>
 
+      <mat-divider />
+
+      <!-- Filtro: Categoría -->
+      <div class="filter-section">
+        <p class="filter-label">Línea textil</p>
+        <div class="chip-group">
+          @for (cat of categorias(); track cat.idCategoria) {
+            <button
+              class="filter-chip"
+              [class.active]="categoriaSeleccionada() === cat.idCategoria"
+              (click)="seleccionarCategoria(cat.idCategoria)"
+            >
+              {{ cat.nombre }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <mat-divider />
+
+      <!-- Filtro: Talla -->
+      <div class="filter-section">
+        <p class="filter-label">Talla</p>
+        <div class="chip-group talla-group">
+          @for (talla of tallas; track talla) {
+            <button
+              class="filter-chip talla-chip"
+              [class.active]="tallaSeleccionada() === talla"
+              (click)="seleccionarTalla(talla)"
+            >
+              {{ talla }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <mat-divider />
+
+      <div class="filter-results">
+        <mat-icon class="results-icon">inventory_2</mat-icon>
+        <span>{{ catalogoFiltrado().length }} prendas encontradas</span>
+      </div>
+
+    </aside>
+
+    <!-- ── VITRINA DE PRODUCTOS ── -->
+    <main class="catalog-main">
+
+      @if (cargando()) {
+        <div class="loading-state">
+          <mat-progress-spinner mode="indeterminate" diameter="48" />
+          <p>Cargando catálogo...</p>
+        </div>
+
+      } @else if (error()) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">wifi_off</mat-icon>
+          <h3>No se pudo cargar el catálogo</h3>
+          <p>{{ error() }}</p>
+          <button mat-flat-button color="primary" (click)="reintentarCarga()">
+            <mat-icon>refresh</mat-icon>
+            Reintentar
+          </button>
+        </div>
+
+      } @else if (catalogoFiltrado().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">search_off</mat-icon>
+          <h3>Sin resultados</h3>
+          <p>No encontramos prendas con esos filtros.</p>
+          <button mat-stroked-button (click)="limpiarFiltros()">
+            Ver todo el catálogo
+          </button>
+        </div>
+
+      } @else {
+        <div class="products-grid">
+          @for (producto of catalogoFiltrado(); track producto.idProducto) {
+
+            <mat-card
+              class="product-card"
+              [class.out-of-stock]="producto.stockActual === 0"
+              appearance="outlined"
+            >
+              <div class="product-image">
+                <div class="image-placeholder">
+                  <mat-icon class="placeholder-icon">checkroom</mat-icon>
+                </div>
+
+                @if (producto.stockActual === 0) {
+                  <span class="badge badge-agotado">Agotado</span>
+                } @else if (esBajoStock(producto)) {
+                  <span class="badge badge-bajo-stock">
+                    ¡Últimas {{ producto.stockActual }}!
+                  </span>
+                }
+
+                <span class="badge badge-categoria">
+                  {{ producto.nombreCategoria }}
+                </span>
+              </div>
+
+              <mat-card-content class="product-body">
+                <div class="product-meta">
+                  <span class="product-color">
+                    <span class="color-dot"
+                      [style.background]="producto.color.toLowerCase()">
+                    </span>
+                    {{ producto.color }}
+                  </span>
+                  <span class="product-talla">Talla {{ producto.talla }}</span>
+                </div>
+
+                <h3 class="product-name">{{ producto.nombre }}</h3>
+                <p class="product-model">{{ producto.modelo }}</p>
+                <p class="product-material">{{ producto.material }}</p>
+              </mat-card-content>
+
+              <mat-card-actions class="product-footer">
+                <span class="product-price">
+                  S/ {{ producto.precioVenta.toFixed(2) }}
+                </span>
+
+                @if (producto.stockActual > 0) {
+                  <button
+                    mat-flat-button
+                    class="btn-agregar"
+                    (click)="agregarAlCarrito(producto)"
+                  >
+                    <mat-icon>add_shopping_cart</mat-icon>
+                    Agregar
+                  </button>
+                } @else {
+                  <button mat-stroked-button disabled class="btn-agotado">
+                    Sin stock
+                  </button>
+                }
+              </mat-card-actions>
+
+            </mat-card>
+          }
+        </div>
+      }
+
+    </main>
   </div>
 </div>

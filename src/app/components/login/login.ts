@@ -45,7 +45,7 @@ export class LoginComponent {
           localStorage.setItem('usuario', JSON.stringify(response.usuario));
         }
         // Redirecciona según el rol
-        if (response.rol === 'ADMIN') {
+        if (response.rol === 'ADMINISTRADOR') {
           this.router.navigate(['/admin']);
         } else if (response.rol === 'ALMACEN') {
           this.router.navigate(['/almacen']);
