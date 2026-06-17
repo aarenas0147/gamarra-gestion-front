@@ -1,1 +1,23 @@
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+
 /* You can add global styles to this file, and also import other style files */
+/* ═══════════════════════════════════════════
+   TOKENS DE DISEÑO — Gamarra Gestión
+   Paleta inspirada en el textil peruano:
+   tela cruda, hilo índigo, acento terracota
+   ═══════════════════════════════════════════ */
+:root {
+  --g-indigo:      #2C3E7A;
+  --g-indigo-dark: #1A2550;
+  --g-terracota:   #C0572A;
+  --g-crudo:       #F7F4EF;
+  --g-gris:        #6B7280;
+  --g-gris-claro:  #E5E7EB;
+  --g-texto:       #1C1C1E;
+  --g-superficie:  #FFFFFF;
+  --g-bajo-stock:  #D97706;
+  --g-agotado:     #6B7280;
+  --radius-card:   12px;
+  --shadow-card:   0 2px 8px rgba(44, 62, 122, 0.08);
+  --shadow-hover:  0 8px 24px rgba(44, 62, 122, 0.15);
+}
