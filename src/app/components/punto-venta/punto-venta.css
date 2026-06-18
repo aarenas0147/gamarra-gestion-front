@@ -10,66 +10,11 @@
 
 /* ── NAVBAR ── */
 .pv-navbar {
-  background: var(--g-indigo-dark);
+  background: var(--g-indigo);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.pv-navbar-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  height: 56px;
-  max-width: 1600px;
-  margin: 0 auto;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background: var(--g-terracota);
-  color: white;
-  font-weight: 900;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.brand-name {
-  font-size: 16px;
-  color: rgba(255,255,255,0.85);
-}
-
-.brand-name strong { color: white; }
-
-.cajero-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: rgba(255,255,255,0.8);
-  font-size: 13px;
-}
-
-.cajero-info mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-.btn-logout {
-  color: rgba(255,255,255,0.7) !important;
-  font-size: 13px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
 }
 
 /* ── LAYOUT PRINCIPAL ── */

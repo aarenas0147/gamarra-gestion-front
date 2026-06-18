@@ -2,25 +2,41 @@
 
   <!-- ══════ NAVBAR ══════ -->
   <header class="pv-navbar">
-    <div class="pv-navbar-inner">
-      <div class="navbar-brand">
-        <span class="brand-icon">G</span>
-        <span class="brand-name">Punto de <strong>Venta</strong></span>
-      </div>
-      <div class="navbar-center">
-        <span class="cajero-info">
-          <mat-icon>person</mat-icon>
-          {{ nombreUsuario }}
-        </span>
-      </div>
-      <div class="navbar-actions">
-        <button mat-button routerLink="/login" class="btn-logout" (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          Salir
-        </button>
-      </div>
+  <div class="navbar-inner">
+
+    <div class="navbar-brand">
+      <span class="brand-icon">G</span>
+      <span class="brand-name">Gamarra<strong>Gestión</strong></span>
+      <span class="brand-modulo">Punto de Venta</span>
     </div>
-  </header>
+
+    <div class="navbar-center">
+      <span class="nav-tab active">
+        <mat-icon>point_of_sale</mat-icon>
+        Caja activa
+      </span>
+    </div>
+
+    <div class="navbar-actions">
+      <span class="usuario-sesion">
+        <mat-icon>account_circle</mat-icon>
+        {{ nombreUsuario }}
+      </span>
+      <button mat-button class="btn-panel-nav"
+        routerLink="/almacen">
+        <mat-icon>arrow_back</mat-icon>
+        <span class="btn-label">Volver al panel</span>
+      </button>
+      <button mat-icon-button class="btn-logout-nav"
+        matTooltip="Cerrar sesión"
+        routerLink="/login"
+        (click)="logout()">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+
+  </div>
+</header>
 
   <!-- ══════ PANTALLA DE VENTA COMPLETADA ══════ -->
   @if (ventaCompletada()) {
