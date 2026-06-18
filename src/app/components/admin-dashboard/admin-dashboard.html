@@ -17,6 +17,10 @@
           <mat-icon>dashboard</mat-icon>
           Dashboard
         </button>
+        <button class="nav-tab" routerLink="/punto-venta">
+          <mat-icon>point_of_sale</mat-icon>
+          Punto de Venta
+        </button>
         <button class="nav-tab"
           [class.active]="seccionActiva() === 'ventas'"
           (click)="seccionActiva.set('ventas')">

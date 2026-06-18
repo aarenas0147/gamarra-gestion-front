@@ -479,6 +479,10 @@
   height: 36px !important;
 }
 
+.btn-agregar.en-carrito {
+  background: #1E5C3A !important;
+}
+
 .btn-agotado {
   font-size: 12px !important;
   color: var(--g-agotado) !important;

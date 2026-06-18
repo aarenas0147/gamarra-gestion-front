@@ -1,0 +1,333 @@
+<div class="carrito-wrapper">
+
+  <!-- ══════ NAVBAR ══════ -->
+  <header class="carrito-navbar">
+    <div class="navbar-inner">
+      <div class="navbar-brand">
+        <span class="brand-icon">G</span>
+        <span class="brand-name">Gamarra<strong>Gestión</strong></span>
+        <span class="brand-modulo">Carrito</span>
+      </div>
+      <div class="navbar-actions">
+        <span class="usuario-sesion">
+          <mat-icon>account_circle</mat-icon>
+          {{ nombreUsuario }}
+        </span>
+        <button mat-button class="btn-login-nav" (click)="volverAlCatalogo()">
+          <mat-icon>arrow_back</mat-icon>
+          <span class="btn-label">Seguir comprando</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════ PANTALLA: COMPROBANTE ══════ -->
+  @if (comprobante()) {
+    <div class="comprobante-screen">
+      <div class="comprobante-card">
+
+        <div class="comprobante-check">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+
+        <h2>¡Compra realizada!</h2>
+        <p class="comprobante-sub">
+          Tu comprobante ha sido generado exitosamente
+        </p>
+
+        <div class="comprobante-numero">
+          {{ comprobante()!.numeroComprobante }}
+        </div>
+        <div class="comprobante-tipo">
+          {{ comprobante()!.tipoComprobante }}
+        </div>
+
+        <div class="comprobante-detalle">
+          <div class="comp-row">
+            <span>Cliente</span>
+            <strong>{{ comprobante()!.nombreCliente }}</strong>
+          </div>
+          <div class="comp-row">
+            <span>Documento</span>
+            <strong>{{ comprobante()!.numeroDocumentoCliente }}</strong>
+          </div>
+          <div class="comp-row">
+            <span>Método de pago</span>
+            <strong>{{ comprobante()!.metodoPago }}</strong>
+          </div>
+          <div class="comp-row">
+            <span>Fecha</span>
+            <strong>{{ formatFecha(comprobante()!.fechaVenta) }}</strong>
+          </div>
+
+          <mat-divider style="margin: 12px 0" />
+
+          <div class="comp-row">
+            <span>Subtotal</span>
+            <span>S/ {{ comprobante()!.montoSubtotal.toFixed(2) }}</span>
+          </div>
+          <div class="comp-row">
+            <span>IGV (18%)</span>
+            <span>S/ {{ comprobante()!.igv.toFixed(2) }}</span>
+          </div>
+          <div class="comp-row comp-total">
+            <span>TOTAL PAGADO</span>
+            <strong>S/ {{ comprobante()!.montoTotal.toFixed(2) }}</strong>
+          </div>
+        </div>
+
+        <!-- Detalle de ítems -->
+        <div class="comprobante-items">
+          <p class="items-titulo">Detalle de la compra</p>
+          @for (item of comprobante()!.detalle; track item.idDetalle) {
+            <div class="comp-item">
+              <div class="comp-item-info">
+                <span class="comp-item-nombre">{{ item.nombreProducto }}</span>
+                <span class="comp-item-meta">
+                  {{ item.talla }} · {{ item.color }} · x{{ item.cantidad }}
+                </span>
+              </div>
+              <span class="comp-item-precio">
+                S/ {{ item.subtotal.toFixed(2) }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <button class="btn-volver-catalogo" (click)="volverAlCatalogo()">
+          <mat-icon>storefront</mat-icon>
+          Volver al catálogo
+        </button>
+
+      </div>
+    </div>
+
+  } @else {
+
+    <!-- ══════ LAYOUT CARRITO ══════ -->
+    <div class="carrito-layout">
+
+      <!-- ── COLUMNA IZQUIERDA: ITEMS ── -->
+      <section class="carrito-items-col">
+
+        <div class="col-header">
+          <h2 class="col-titulo">
+            Mi Carrito
+            <span class="items-count">{{ items().length }} productos</span>
+          </h2>
+        </div>
+
+        @if (items().length === 0) {
+          <div class="carrito-vacio">
+            <mat-icon>remove_shopping_cart</mat-icon>
+            <h3>Tu carrito está vacío</h3>
+            <p>Agrega productos desde el catálogo para continuar</p>
+            <button class="btn-ir-catalogo" (click)="volverAlCatalogo()">
+              <mat-icon>storefront</mat-icon>
+              Ir al catálogo
+            </button>
+          </div>
+        } @else {
+          <div class="items-list">
+            @for (item of items(); track item.producto.idProducto) {
+              <div class="carrito-item-card">
+
+                <!-- Imagen placeholder -->
+                <div class="item-imagen">
+                  <mat-icon>checkroom</mat-icon>
+                </div>
+
+                <!-- Info del producto -->
+                <div class="item-info">
+                  <h4 class="item-nombre">{{ item.producto.nombre }}</h4>
+                  <p class="item-meta">
+                    {{ item.producto.modelo }} ·
+                    Talla {{ item.producto.talla }} ·
+                    {{ item.producto.color }}
+                  </p>
+                  <p class="item-material">{{ item.producto.material }}</p>
+                  <p class="item-precio-unit">
+                    S/ {{ item.producto.precioVenta.toFixed(2) }} c/u
+                  </p>
+                </div>
+
+                <!-- Controles de cantidad -->
+                <div class="item-controles">
+                  <div class="qty-control">
+                    <button class="qty-btn"
+                      (click)="actualizarCantidad(
+                        item.producto.idProducto,
+                        item.cantidad - 1
+                      )">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <span class="qty-valor">{{ item.cantidad }}</span>
+                    <button class="qty-btn"
+                      [disabled]="item.cantidad >= item.producto.stockActual"
+                      (click)="actualizarCantidad(
+                        item.producto.idProducto,
+                        item.cantidad + 1
+                      )">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </div>
+                  <span class="item-subtotal">
+                    S/ {{ (item.producto.precioVenta * item.cantidad).toFixed(2) }}
+                  </span>
+                  <button class="btn-eliminar"
+                    matTooltip="Eliminar del carrito"
+                    (click)="eliminar(item.producto.idProducto)">
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+              </div>
+            }
+          </div>
+        }
+
+      </section>
+
+      <!-- ── COLUMNA DERECHA: CHECKOUT ── -->
+      @if (items().length > 0) {
+        <aside class="checkout-col">
+
+          <!-- Resumen de totales -->
+          <div class="resumen-card">
+            <h3 class="resumen-titulo">Resumen del pedido</h3>
+            <mat-divider />
+
+            <div class="resumen-rows">
+              <div class="resumen-row">
+                <span>Subtotal ({{ items().length }} productos)</span>
+                <span>S/ {{ subtotal().toFixed(2) }}</span>
+              </div>
+              <div class="resumen-row">
+                <span>IGV (18%)</span>
+                <span>S/ {{ igv().toFixed(2) }}</span>
+              </div>
+            </div>
+
+            <mat-divider />
+
+            <div class="resumen-total">
+              <span>Total</span>
+              <strong>S/ {{ total().toFixed(2) }}</strong>
+            </div>
+          </div>
+
+          <!-- Datos del cliente -->
+          <div class="checkout-card">
+            <h3 class="checkout-titulo">
+              <mat-icon>person</mat-icon>
+              Datos de facturación
+            </h3>
+
+            <div class="cliente-busqueda">
+              <input
+                class="checkout-input"
+                placeholder="DNI o RUC del cliente"
+                [(ngModel)]="documentoCliente"
+                (keyup.enter)="buscarCliente()"
+                maxlength="11"
+              />
+              <button class="btn-buscar-cliente"
+                (click)="buscarCliente()"
+                [disabled]="buscandoCliente() || !documentoCliente.trim()">
+                @if (buscandoCliente()) {
+                  <mat-progress-spinner diameter="18" mode="indeterminate"/>
+                } @else {
+                  <mat-icon>search</mat-icon>
+                }
+              </button>
+            </div>
+
+            @if (errorCliente()) {
+              <p class="cliente-error">
+                <mat-icon>error_outline</mat-icon>
+                {{ errorCliente() }}
+              </p>
+            }
+
+            @if (cliente()) {
+              <div class="cliente-encontrado">
+                <mat-icon class="cliente-ok-icon">verified_user</mat-icon>
+                <div>
+                  <p class="cliente-doc">{{ cliente()!.numeroDocumento }}</p>
+                  <p class="cliente-nombre">
+                    {{ cliente()!.razonSocial || 'Cliente registrado' }}
+                  </p>
+                  @if (cliente()!.telefono) {
+                    <p class="cliente-tel">📞 {{ cliente()!.telefono }}</p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Tipo de comprobante -->
+          <div class="checkout-card">
+            <h3 class="checkout-titulo">
+              <mat-icon>receipt</mat-icon>
+              Comprobante
+            </h3>
+            <div class="opcion-chips">
+              <button class="opcion-chip"
+                [class.active]="tipoComprobante() === 'BOLETA'"
+                (click)="tipoComprobante.set('BOLETA')">
+                Boleta
+              </button>
+              <button class="opcion-chip"
+                [class.active]="tipoComprobante() === 'FACTURA'"
+                (click)="tipoComprobante.set('FACTURA')">
+                Factura
+              </button>
+            </div>
+          </div>
+
+          <!-- Método de pago -->
+          <div class="checkout-card">
+            <h3 class="checkout-titulo">
+              <mat-icon>payments</mat-icon>
+              Método de pago
+            </h3>
+            <div class="opcion-chips">
+              @for (metodo of metodosPago; track metodo) {
+                <button class="opcion-chip"
+                  [class.active]="metodoPago() === metodo"
+                  (click)="metodoPago.set(metodo)">
+                  {{ metodo }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Botón finalizar -->
+          <button
+            class="btn-finalizar"
+            [disabled]="!puedeComprar()"
+            (click)="finalizarCompra()"
+          >
+            @if (procesando()) {
+              <mat-progress-spinner diameter="22" mode="indeterminate"/>
+              Procesando compra...
+            } @else {
+              <mat-icon>shopping_bag</mat-icon>
+              Finalizar compra · S/ {{ total().toFixed(2) }}
+            }
+          </button>
+
+          @if (!cliente()) {
+            <p class="checkout-hint">
+              <mat-icon>info_outline</mat-icon>
+              Busca tu documento para continuar
+            </p>
+          }
+
+        </aside>
+      }
+
+    </div>
+  }
+
+</div>

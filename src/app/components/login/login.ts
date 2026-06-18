@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Auth } from '../../services/auth';
 
 @Component({
@@ -12,6 +12,8 @@ import { Auth } from '../../services/auth';
   styleUrls: ['./login.css']
 } as any)
 export class LoginComponent {
+
+  private returnUrl = '/';
   
   public credentials = {
     correo: '',
@@ -21,7 +23,13 @@ export class LoginComponent {
   public errorMessage: string | null = null;
   public isLoading: boolean = false;
 
-  constructor(private router: Router, private authService: Auth) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: Auth
+  ) {
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] ?? '/';
+  }
 
   public onSubmit(): void {
     this.errorMessage = null;
@@ -41,9 +49,12 @@ export class LoginComponent {
           localStorage.setItem('usuario', JSON.stringify(response.usuario));
         }
         // Redirecciona según el rol
-        if (response.rol === 'ADMINISTRADOR') {
+        const rol = response.rol;
+        if (this.returnUrl !== '/') {
+          this.router.navigateByUrl(this.returnUrl);
+        } else if (rol === 'ADMINISTRADOR') {
           this.router.navigate(['/admin']);
-        } else if (response.rol === 'ENCARGADO_ALMACEN') {
+        } else if (rol === 'ENCARGADO_ALMACEN') {
           this.router.navigate(['/almacen']);
         } else {
           this.router.navigate(['/']);

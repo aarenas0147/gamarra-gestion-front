@@ -19,6 +19,24 @@ export const authGuard: CanActivateFn = () => {
 };
 
 /**
+ * Guard del carrito: si no está autenticado redirige al login
+ * guardando la ruta de retorno para volver después del login.
+ */
+export const carritoGuard: CanActivateFn = () => {
+  const auth = inject(Auth);
+  const router = inject(Router);
+
+  if (auth.isAuthenticated()) {
+    return true;
+  }
+
+  router.navigate(['/login'], {
+    queryParams: { returnUrl: '/carrito' }
+  });
+  return false;
+};
+
+/**
  * Guard exclusivo para el Administrador.
  * Si está autenticado pero no tiene el rol correcto,
  * redirige al catálogo con acceso denegado.

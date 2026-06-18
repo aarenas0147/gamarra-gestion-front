@@ -212,10 +212,19 @@
                   <button
                     mat-flat-button
                     class="btn-agregar"
+                    [class.en-carrito]="cantidadEnCarrito(producto.idProducto) > 0"
                     (click)="agregarAlCarrito(producto)"
                   >
-                    <mat-icon>add_shopping_cart</mat-icon>
-                    Agregar
+                    <mat-icon>
+                      {{ cantidadEnCarrito(producto.idProducto) > 0
+                        ? 'add_shopping_cart'
+                        : 'add_shopping_cart' }}
+                    </mat-icon>
+                    @if (cantidadEnCarrito(producto.idProducto) > 0) {
+                      {{ cantidadEnCarrito(producto.idProducto) }} en carrito
+                    } @else {
+                      Agregar
+                    }
                   </button>
                 } @else {
                   <button mat-stroked-button disabled class="btn-agotado">

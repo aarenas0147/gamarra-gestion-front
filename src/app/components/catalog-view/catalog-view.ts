@@ -23,6 +23,7 @@ import {
   CategoriaResponse
 } from '../../services/producto';
 import { Auth } from '../../services/auth';
+import { CarritoService } from '../../services/carrito';
 
 @Component({
   selector: 'app-catalog-view',
@@ -103,7 +104,8 @@ export class CatalogViewComponent implements OnInit, OnDestroy {
     private productoService: ProductoService,
     private snackBar: MatSnackBar,
     private auth: Auth,
-    private router: Router
+    private router: Router,
+    private carritoService: CarritoService
   ) {}
 
   ngOnInit(): void {
@@ -215,12 +217,23 @@ export class CatalogViewComponent implements OnInit, OnDestroy {
 
   agregarAlCarrito(producto: ProductoResponse): void {
     if (producto.stockActual === 0) return;
-    this.carrito.update(c => [...c, producto]);
+
+    const yaEsta = this.carritoService.estaEnCarrito(producto.idProducto);
+    this.carritoService.agregar(producto);
+
     this.snackBar.open(
-      `✓ ${producto.nombre} agregado al carrito`,
+      yaEsta
+        ? `+1 ${producto.nombre} en el carrito`
+        : `✓ ${producto.nombre} agregado al carrito`,
       'Ver carrito',
       { duration: 3000, panelClass: 'snack-success' }
-    );
+    ).onAction().subscribe(() => {
+      this.router.navigate(['/carrito']);
+    });
+  }
+
+  cantidadEnCarrito(idProducto: number): number {
+    return this.carritoService.getCantidadProducto(idProducto);
   }
 
   reintentarCarga(): void {

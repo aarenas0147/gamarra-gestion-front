@@ -295,11 +295,12 @@
           <mat-progress-spinner diameter="20" mode="indeterminate" />
           Procesando...
         } @else {
-          <mat-icon>point_of_sale</mat-icon>
-          Cobrar S/ {{ total().toFixed(2) }}
+          <ng-container>
+            <mat-icon>point_of_sale</mat-icon>
+            Cobrar S/ {{ total().toFixed(2) }}
+          </ng-container>
         }
       </button>
-
     </section>
   </div>
 </div>
