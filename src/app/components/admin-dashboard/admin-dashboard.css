@@ -1,255 +1,816 @@
-/* Layout Principal (Sidebar + Contenedor de tu Diseño) */
-.admin-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
+/* ══════════════════════════════════════════
+   ADMIN DASHBOARD
+   ══════════════════════════════════════════ */
+.admin-wrapper {
   min-height: 100vh;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background-color: #f8fafc;
-}
-
-/* Sidebar (Consistente con la navegación del proyecto) */
-.admin-sidebar {
-  background-color: #1e293b;
-  color: #ffffff;
-  padding: 2rem 1.5rem;
+  background: var(--g-crudo);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  border-right: 1px solid #334155;
 }
 
-.sidebar-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #38bdf8;
-  margin-bottom: 2.5rem;
+/* ── CONTENIDO ── */
+.admin-content {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── LOADING ── */
+.loading-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px;
+  color: var(--g-gris);
+  font-size: 14px;
+}
+
+.empty-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px;
+  color: var(--g-gris);
   text-align: center;
-  border-bottom: 1px solid #334155;
-  padding-bottom: 1rem;
 }
 
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex-grow: 1;
+.empty-mini mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  opacity: 0.25;
 }
 
-.nav-btn {
-  background: none;
-  border: none;
-  color: #cbd5e1;
-  text-align: left;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.empty-mini p { font-size: 13px; margin: 0; }
+
+/* ══════════════════════════════════════════
+   DASHBOARD — MÉTRICAS
+   ══════════════════════════════════════════ */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-.nav-btn:hover, .nav-btn.active {
-  background-color: #0f172a;
-  color: #ffffff;
-}
-
-.btn-logout-admin {
-  width: 100%;
-  background-color: #475569;
-  color: #f8fafc;
-  border: none;
-  padding: 0.65rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.btn-logout-admin:hover {
-  background-color: #ef4444;
-}
-
-/* ==========================================================================
-   ESTILOS EXACTOS PARA TU DISEÑO: .dashboard-container
-   ========================================================================== */
-
-.dashboard-container {
-  padding: 2.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  overflow-y: auto;
-}
-
-/* Estilo Base de las Tarjetas (.card) */
-.card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+.metrica-card {
+  background: white;
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--g-gris-claro);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s;
 }
 
-/* Rejilla de KPIs (.kpi-grid) */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+.metrica-card:hover { transform: translateY(-2px); }
+
+.metrica-icono {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.kpi-card h3 {
-  font-size: 0.9rem;
-  color: #64748b;
-  margin: 0 0 0.5rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.metrica-icono mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  color: white;
 }
 
-.kpi-card .metric-value {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 0.5rem 0;
+.metrica-card.azul   .metrica-icono { background: var(--g-indigo); }
+.metrica-card.verde  .metrica-icono { background: #1E5C3A; }
+.metrica-card.indigo .metrica-icono { background: #6366f1; }
+.metrica-card.naranja .metrica-icono { background: var(--g-bajo-stock); }
+.metrica-card.rojo   .metrica-icono { background: #dc2626; }
+
+.metrica-card.alerta-activa {
+  border-color: #fca5a5;
+  background: #fff5f5;
 }
 
-/* Modificadores específicos de métricas */
-.kpi-card .metric-value.warning {
-  color: #ef4444; /* Rojo/Naranja para Alertas Críticas */
-}
-
-.kpi-card .trend {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #64748b;
-}
-
-.kpi-card .trend.positive {
-  color: #10b981; /* Verde Éxito */
-}
-
-.kpi-card .trend.negative {
-  color: #f59e0b; /* Ámbar de advertencia */
-}
-
-/* Rejilla de Gráficos y Listas (.analytics-grid) */
-.analytics-grid {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 1.5rem;
-}
-
-@media (max-width: 1024px) {
-  .analytics-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.chart-section h2, .stock-section h2 {
-  font-size: 1.2rem;
-  color: #1e293b;
-  margin: 0 0 1.5rem 0;
-  font-weight: 600;
-}
-
-/* Lógica del Gráfico de Barras Simuladas (.chart-placeholder) */
-.chart-placeholder {
+.metrica-datos {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 2px;
+  min-width: 0;
 }
 
-.bar-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.metrica-valor {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--g-texto);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.bar-row span {
-  font-size: 0.85rem;
-  color: #475569;
-  font-weight: 500;
+.metrica-label {
+  font-size: 11px;
+  color: var(--g-gris);
 }
 
-.bar-wrapper {
-  background-color: #f1f5f9;
-  border-radius: 6px;
-  height: 28px;
-  width: 100%;
+/* ══════════════════════════════════════════
+   DASHBOARD — DOS COLUMNAS
+   ══════════════════════════════════════════ */
+.dashboard-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dashboard-col {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--g-gris-claro);
   overflow: hidden;
 }
 
-.bar.animate-bar {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa); /* Azul Gamarra */
-  height: 100%;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 0.75rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  border-radius: 6px;
-  box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+.col-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--g-gris-claro);
 }
 
-/* Sección de Reposición Urgente (.stock-list) */
-.stock-list {
-  list-style: none;
-  padding: 0;
+.col-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--g-texto);
   margin: 0;
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.stock-item {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  font-size: 0.9rem;
+  gap: 6px;
 }
 
-/* Modificadores de criticidad en la lista */
-.stock-item.critical {
-  border-left: 4px solid #ef4444;
-  background-color: #fef2f2;
+.col-title mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--g-indigo);
 }
 
-.stock-item.warning {
-  border-left: 4px solid #f59e0b;
-  background-color: #fffbeb;
+/* ── TOP PRODUCTOS ── */
+.top-list {
+  display: flex;
+  flex-direction: column;
 }
 
-.stock-item .item-name {
-  font-weight: 600;
-  color: #334155;
+.top-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--g-gris-claro);
+  transition: background 0.1s;
 }
 
-.stock-item .item-badge {
-  font-size: 0.8rem;
+.top-item:hover { background: var(--g-crudo); }
+.top-item:last-child { border-bottom: none; }
+
+.top-pos {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--g-gris);
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.top-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.top-nombre {
+  font-size: 13px;
   font-weight: 700;
-  padding: 0.25rem 0.6rem;
+  color: var(--g-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-detalle {
+  font-size: 11px;
+  color: var(--g-gris);
+}
+
+.top-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.top-unidades {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--g-indigo);
+}
+
+.top-ingresos {
+  font-size: 11px;
+  color: var(--g-gris);
+}
+
+/* ── ÚLTIMAS VENTAS ── */
+.ventas-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.venta-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--g-gris-claro);
+}
+
+.venta-item:last-child { border-bottom: none; }
+
+.venta-comprobante {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--g-indigo);
+  font-family: monospace;
+  min-width: 90px;
+}
+
+.venta-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.venta-cliente {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--g-texto);
+}
+
+.venta-metodo {
+  font-size: 10px;
+  color: var(--g-gris);
+}
+
+.venta-derecha {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.venta-total {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--g-texto);
+}
+
+.estado-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.estado-completada { background: rgba(30,92,58,0.1); color: #1E5C3A; }
+.estado-anulada    { background: rgba(220,38,38,0.1); color: #dc2626; }
+.estado-pendiente  { background: rgba(217,119,6,0.1); color: var(--g-bajo-stock); }
+
+/* ── ANULACIÓN ── */
+.anulacion-section { padding: 0 16px 16px; }
+
+.anulacion-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--g-gris);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 10px;
+}
+
+.anulacion-titulo mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.anulacion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--g-gris-claro);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--g-texto);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus { border-color: var(--g-indigo); }
+
+.form-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--g-gris-claro);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--g-texto);
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.form-textarea:focus { border-color: var(--g-indigo); }
+
+.form-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--g-gris-claro);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--g-texto);
+  outline: none;
+  background: white;
+  box-sizing: border-box;
+}
+
+.btn-anular {
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.btn-anular:hover:not(:disabled) { background: #b91c1c; }
+.btn-anular:disabled {
+  background: var(--g-gris-claro);
+  color: var(--g-gris);
+  cursor: not-allowed;
+}
+
+.btn-anular mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+/* ══════════════════════════════════════════
+   SECCIONES DE REPORTE
+   ══════════════════════════════════════════ */
+.seccion-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.seccion-header { margin-bottom: 4px; }
+
+.seccion-titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--g-texto);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.seccion-titulo mat-icon {
+  color: var(--g-indigo);
+}
+
+/* ── FILTROS ── */
+.filtros-card {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--g-gris-claro);
+  padding: 16px 20px;
+}
+
+.filtros-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filtro-sm { max-width: 120px; }
+
+.filtro-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--g-gris);
+}
+
+.btn-generar {
+  background: var(--g-indigo);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 20px;
+  height: 38px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-generar:hover:not(:disabled) { background: var(--g-indigo-dark); }
+.btn-generar:disabled {
+  background: var(--g-gris-claro);
+  color: var(--g-gris);
+  cursor: not-allowed;
+}
+
+.btn-generar mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ── REPORTE VENTAS RESULTADO ── */
+.reporte-ventas-resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reporte-metricas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.reporte-metrica {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--g-gris-claro);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reporte-metrica.destacada {
+  border-color: var(--g-indigo);
+  background: rgba(44, 62, 122, 0.04);
+}
+
+.rm-valor {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--g-texto);
+}
+
+.reporte-metrica.destacada .rm-valor { color: var(--g-indigo); }
+
+.rm-label {
+  font-size: 11px;
+  color: var(--g-gris);
+}
+
+/* ── MÉTODOS DE PAGO ── */
+.metodos-grid {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--g-gris-claro);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metodos-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--g-texto);
+  margin: 0 0 4px;
+}
+
+.metodo-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--g-crudo);
   border-radius: 6px;
 }
 
-.stock-item.critical .item-badge {
-  background-color: #fee2e2;
-  color: #991b1b;
+.metodo-nombre {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--g-texto);
+  min-width: 100px;
 }
 
-.stock-item.warning .item-badge {
-  background-color: #fef3c7;
-  color: #92400e;
+.metodo-transacciones {
+  flex: 1;
+  font-size: 12px;
+  color: var(--g-gris);
 }
 
-/* Adaptabilidad para pantallas móviles */
-@media (max-width: 768px) {
-  .admin-layout {
-    grid-template-columns: 1fr;
-  }
-  .admin-sidebar {
-    display: none;
-  }
+.metodo-total {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--g-indigo);
+}
+
+/* ── TABLA TOP PRODUCTOS / KARDEX ── */
+.table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--g-gris-claro);
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.table-section {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--g-gris-claro);
+  overflow: hidden;
+}
+
+.table-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--g-texto);
+  margin: 0;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--g-gris-claro);
+}
+
+.admin-table {
+  width: 100%;
+}
+
+.admin-table th {
+  background: var(--g-crudo);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--g-gris);
+  padding: 10px 14px;
+}
+
+.admin-table td {
+  font-size: 12px;
+  color: var(--g-texto);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--g-gris-claro);
+}
+
+/* ── RANKING BADGES ── */
+.ranking-badge {
+  font-size: 12px;
+  font-weight: 800;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--g-gris-claro);
+  color: var(--g-gris);
+}
+
+.ranking-badge.gold   { background: #FEF3C7; color: #D97706; }
+.ranking-badge.silver { background: #F1F5F9; color: #64748B; }
+.ranking-badge.bronze { background: #FEF0E7; color: #C2410C; }
+
+.cell-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.prod-nombre {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--g-texto);
+}
+
+.prod-modelo {
+  font-size: 10px;
+  color: var(--g-gris);
+}
+
+.talla-chip {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(44, 62, 122, 0.08);
+  color: var(--g-indigo);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.ingreso-valor { color: #1E5C3A; }
+
+/* ── KARDEX ── */
+.kardex-header {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--g-gris-claro);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.kardex-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kardex-nombre {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--g-texto);
+  margin: 0;
+}
+
+.kardex-codigo {
+  font-size: 12px;
+  font-family: monospace;
+  color: var(--g-gris);
+}
+
+.kardex-categoria {
+  font-size: 11px;
+  background: rgba(44, 62, 122, 0.08);
+  color: var(--g-indigo);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  font-weight: 600;
+}
+
+.kardex-stock-info {
+  display: flex;
+  gap: 24px;
+}
+
+.ks-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ks-item.critico .ks-valor { color: #dc2626; }
+
+.ks-valor {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--g-texto);
+}
+
+.ks-label {
+  font-size: 10px;
+  color: var(--g-gris);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kardex-metricas {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.km-card {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--g-gris-claro);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.km-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  color: var(--g-gris);
+}
+
+.km-card.entrada .km-icon { color: #1E5C3A; }
+.km-card.salida  .km-icon { color: #dc2626; }
+.km-card.ajuste  .km-icon { color: var(--g-terracota); }
+.km-card.alerta  .km-icon { color: var(--g-bajo-stock); }
+
+.km-valor {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--g-texto);
+}
+
+.km-label {
+  font-size: 10px;
+  color: var(--g-gris);
+  line-height: 1.3;
+}
+
+.tasa-buena .km-valor { color: #1E5C3A; }
+.tasa-media .km-valor { color: var(--g-bajo-stock); }
+.tasa-baja  .km-valor { color: #dc2626; }
+
+/* ── BADGES TIPO MOVIMIENTO ── */
+.tipo-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.tipo-entrada { background: rgba(30,92,58,0.1);   color: #1E5C3A; }
+.tipo-salida  { background: rgba(220,38,38,0.1);  color: #dc2626; }
+.tipo-ajuste  { background: rgba(192,87,42,0.1);  color: var(--g-terracota); }
+
+.diferencia { font-weight: 700; }
+.diferencia.positivo { color: #1E5C3A; }
+.diferencia.negativo { color: #dc2626; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 1200px) {
+  .metricas-grid { grid-template-columns: repeat(3, 1fr); }
+  .kardex-metricas { grid-template-columns: repeat(3, 1fr); }
+  .reporte-metricas { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .dashboard-cols { grid-template-columns: 1fr; }
+  .metricas-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-nav { display: none; }
+  .kardex-header { flex-direction: column; }
+  .kardex-stock-info { justify-content: flex-start; }
+}
+
+@media (max-width: 600px) {
+  .admin-content { padding: 16px; }
+  .metricas-grid { grid-template-columns: 1fr 1fr; }
+  .filtros-row { flex-direction: column; align-items: stretch; }
+  .kardex-metricas { grid-template-columns: repeat(2, 1fr); }
 }

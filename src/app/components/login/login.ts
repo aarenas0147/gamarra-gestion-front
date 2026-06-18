@@ -36,18 +36,14 @@ export class LoginComponent {
     this.authService.login(this.credentials).subscribe({
       next: (response) => {
         console.log('Autenticación exitosa:', response);
-        // Guardar el token si es necesario
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
-        }
-        // Guardar datos del usuario
+        // El Auth service ya guarda token y datos en localStorage
         if (response.usuario) {
           localStorage.setItem('usuario', JSON.stringify(response.usuario));
         }
         // Redirecciona según el rol
         if (response.rol === 'ADMINISTRADOR') {
           this.router.navigate(['/admin']);
-        } else if (response.rol === 'ALMACEN') {
+        } else if (response.rol === 'ENCARGADO_ALMACEN') {
           this.router.navigate(['/almacen']);
         } else {
           this.router.navigate(['/']);

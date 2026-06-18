@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil, switchMap } from 'rxjs';
@@ -22,6 +22,7 @@ import {
   ProductoResponse,
   CategoriaResponse
 } from '../../services/producto';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-catalog-view',
@@ -46,6 +47,10 @@ import {
   styleUrl: './catalog-view.css'
 })
 export class CatalogViewComponent implements OnInit, OnDestroy {
+
+  estaAutenticado = signal(false);
+  rolUsuario = signal<string | null>(null);
+  nombreUsuario = signal<string | null>(null);
 
   // Estado
   cargando = signal(true);
@@ -96,10 +101,15 @@ export class CatalogViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private productoService: ProductoService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private auth: Auth,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.estaAutenticado.set(this.auth.isAuthenticated());
+    this.rolUsuario.set(this.auth.getRol());
+    this.nombreUsuario.set(this.auth.getNombre());
     this.cargarCatalogo();
     this.cargarCategorias();
     this.configurarBusqueda();
@@ -154,6 +164,25 @@ export class CatalogViewComponent implements OnInit, OnDestroy {
   }
 
   // ── Eventos de UI ──────────────────────────────────────────────
+
+  irAlPanel(): void {
+    const rol = this.auth.getRol();
+    if (rol === 'ADMINISTRADOR') {
+      this.router.navigate(['/admin']);
+    } else if (rol === 'ENCARGADO_ALMACEN') {
+      this.router.navigate(['/almacen']);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+  cerrarSesion(): void {
+    this.auth.logout();
+    this.estaAutenticado.set(false);
+    this.rolUsuario.set(null);
+    this.nombreUsuario.set(null);
+    this.carrito.set([]);
+  }
 
   onBusqueda(event: Event): void {
     const valor = (event.target as HTMLInputElement).value;

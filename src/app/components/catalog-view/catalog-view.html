@@ -26,10 +26,34 @@
       </div>
 
       <div class="navbar-actions">
-        <button mat-button routerLink="/login" class="btn-login-nav">
-          <mat-icon>person_outline</mat-icon>
-          <span class="btn-label">Iniciar Sesión</span>
-        </button>
+
+        @if (estaAutenticado()) {
+          <!-- Usuario autenticado: mostrar nombre, panel y logout -->
+          <span class="usuario-sesion">
+            <mat-icon>account_circle</mat-icon>
+            {{ nombreUsuario() }}
+          </span>
+
+          @if (rolUsuario() !== 'CLIENTE') {
+            <button mat-button class="btn-panel-nav" (click)="irAlPanel()">
+              <mat-icon>dashboard</mat-icon>
+              <span class="btn-label">Mi Panel</span>
+            </button>
+          }
+
+          <button mat-icon-button class="btn-logout-nav"
+            matTooltip="Cerrar sesión"
+            (click)="cerrarSesion()">
+            <mat-icon>logout</mat-icon>
+          </button>
+
+        } @else {
+          <!-- Sin sesión: mostrar botón de login -->
+          <button mat-button routerLink="/login" class="btn-login-nav">
+            <mat-icon>person_outline</mat-icon>
+            <span class="btn-label">Iniciar Sesión</span>
+          </button>
+        }
 
         <button
           mat-icon-button
@@ -41,8 +65,8 @@
         >
           <mat-icon>shopping_cart</mat-icon>
         </button>
-      </div>
 
+      </div>
     </div>
   </header>
 
