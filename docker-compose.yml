@@ -1,0 +1,21 @@
+# ==========================================
+# AMBIENTE DE PRODUCCIÓN
+# Uso: docker-compose up --build
+# Construye la imagen optimizada con Nginx
+# ==========================================
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gamarra-front-prod
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    networks:
+      - gamarra-prod-net
+
+networks:
+  gamarra-prod-net:
+    driver: bridge
