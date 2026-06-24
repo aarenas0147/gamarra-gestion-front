@@ -1,0 +1,29 @@
+# ==========================================
+# AMBIENTE DE DESARROLLO
+# Uso: docker-compose -f docker-compose.dev.yml up
+# Hot reload activado: los cambios en código
+# se reflejan automáticamente sin reconstruir
+# ==========================================
+
+services:
+  frontend-dev:
+    image: node:20-alpine
+    container_name: gamarra-front-dev
+    working_dir: /app
+    volumes:
+      # Monta el código fuente local dentro del contenedor
+      # Cualquier cambio en tu PC se refleja en tiempo real
+      - .:/app
+      # Volumen anónimo para node_modules (evita conflictos con tu SO)
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm ci && npm run start -- --host 0.0.0.0 --poll 500"
+    networks:
+      - gamarra-dev-net
+
+networks:
+  gamarra-dev-net:
+    driver: bridge
