@@ -1,0 +1,30 @@
+name: Gamarra Gestion - Frontend CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: './package-lock.json'
+
+    - name: Instalar dependencias
+      run: npm ci
+
+    # Bloquea si hay errores de sintaxis o formato (Linter)
+    - name: Ejecutar Linter
+      run: npm run lint --if-present
+
+    # Simula la compilación final. Si hay un error de TypeScript, el pipeline fallará
+    - name: Construir proyecto (Build)
+      run: npm run build -- --configuration=production
