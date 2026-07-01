@@ -114,4 +114,52 @@ export class ReporteService {
       `${this.apiUrl}/kardex/${idProducto}`
     );
   }
+  
+  // ── Descargas Excel ──────────────────────────────────────────
+
+  /**
+   * Descarga el reporte de ventas en formato Excel.
+   * @param desde Fecha inicio en formato YYYY-MM-DD
+   * @param hasta Fecha fin en formato YYYY-MM-DD
+   */
+  descargarExcelVentas(desde: string, hasta: string): Observable<Blob> {
+    const params = new HttpParams()
+      .set('desde', `${desde}T00:00:00`)
+      .set('hasta',  `${hasta}T23:59:59`);
+    return this.http.get(
+      `${this.apiUrl}/ventas/excel`,
+      { params, responseType: 'blob' }
+    );
+  }
+
+  /**
+   * Descarga el ranking de productos más vendidos en Excel.
+   * @param limite Cantidad de productos en el ranking
+   * @param desde  Fecha inicio opcional en formato YYYY-MM-DD
+   * @param hasta  Fecha fin opcional en formato YYYY-MM-DD
+   */
+  descargarExcelTopProductos(
+    limite: number,
+    desde?: string,
+    hasta?: string
+  ): Observable<Blob> {
+    let params = new HttpParams().set('limite', limite);
+    if (desde) params = params.set('desde', `${desde}T00:00:00`);
+    if (hasta) params = params.set('hasta',  `${hasta}T23:59:59`);
+    return this.http.get(
+      `${this.apiUrl}/top-productos/excel`,
+      { params, responseType: 'blob' }
+    );
+  }
+
+  /**
+   * Descarga el Kardex de un producto en Excel.
+   * @param idProducto ID del producto a auditar
+   */
+  descargarExcelKardex(idProducto: number): Observable<Blob> {
+    return this.http.get(
+      `${this.apiUrl}/kardex/${idProducto}/excel`,
+      { responseType: 'blob' }
+    );
+  }
 }

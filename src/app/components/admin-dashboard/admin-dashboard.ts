@@ -25,6 +25,7 @@ import {
 import { ProductoService, ProductoResponse } from '../../services/producto';
 import { VentaService } from '../../services/venta';
 import { Auth } from '../../services/auth';
+import { environment } from '../../../environments/environment';
 
 type SeccionActiva = 'dashboard' | 'ventas' | 'productos' | 'kardex';
 
@@ -160,6 +161,19 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  descargarExcelVentas(): void {
+    if (!this.filtroVentas.desde || !this.filtroVentas.hasta) return;
+
+    this.reporteService
+      .descargarExcelVentas(this.filtroVentas.desde, this.filtroVentas.hasta)
+      .subscribe({
+        next: (blob) => this.triggerDescarga(blob, 'reporte_ventas.xlsx'),
+        error: () => this.snackBar.open(
+          'Error al generar el Excel', 'Cerrar', { duration: 3000 }
+        )
+      });
+  }
+
   getMetodosPago(): string[] {
     const reporte = this.reporteVentas();
     if (!reporte) return [];
@@ -191,6 +205,21 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  descargarExcelTopProductos(): void {
+    this.reporteService
+      .descargarExcelTopProductos(
+        this.filtroTop.limite,
+        this.filtroTop.desde || undefined,
+        this.filtroTop.hasta || undefined
+      )
+      .subscribe({
+        next: (blob) => this.triggerDescarga(blob, 'top_productos.xlsx'),
+        error: () => this.snackBar.open(
+          'Error al generar el Excel', 'Cerrar', { duration: 3000 }
+        )
+      });
+  }
+
   // ── Reporte 3: Kardex ──────────────────────────────────────
 
   generarKardex(): void {
@@ -210,6 +239,21 @@ export class AdminDashboardComponent implements OnInit {
         this.cargandoKardex.set(false);
       }
     });
+  }
+
+  descargarExcelKardex(): void {
+    if (!this.kardexIdProducto) return;
+
+    this.reporteService
+      .descargarExcelKardex(this.kardexIdProducto)
+      .subscribe({
+        next: (blob) => this.triggerDescarga(
+          blob, `kardex_producto_${this.kardexIdProducto}.xlsx`
+        ),
+        error: () => this.snackBar.open(
+          'Error al generar el Excel', 'Cerrar', { duration: 3000 }
+        )
+      });
   }
 
   getKardexTasaColor(): string {
@@ -297,5 +341,13 @@ export class AdminDashboardComponent implements OnInit {
     const hoy = new Date();
     return new Date(hoy.getFullYear(), hoy.getMonth(), 1)
       .toISOString().split('T')[0];
+  }
+
+  private triggerDescarga(blob: Blob, nombreArchivo: string): void {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = nombreArchivo;
+    link.click();
+    URL.revokeObjectURL(link.href);
   }
 }

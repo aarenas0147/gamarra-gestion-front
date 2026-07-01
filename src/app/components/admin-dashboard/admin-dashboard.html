@@ -303,6 +303,13 @@
               }
               Generar reporte
             </button>
+            <button class="btn-generar btn-excel"
+              (click)="descargarExcelVentas()"
+              [disabled]="!reporteVentas()"
+              matTooltip="Descargar Excel">
+              <mat-icon>download</mat-icon>
+              Excel
+            </button>
           </div>
         </div>
 
@@ -416,6 +423,13 @@
                 <mat-icon>bar_chart</mat-icon>
               }
               Generar ranking
+            </button>
+            <button class="btn-generar btn-excel"
+              (click)="descargarExcelTopProductos()"
+              [disabled]="topProductos().length === 0"
+              matTooltip="Descargar Excel">
+              <mat-icon>download</mat-icon>
+              Excel
             </button>
           </div>
         </div>
@@ -537,6 +551,13 @@
                 <mat-icon>search</mat-icon>
               }
               Consultar Kardex
+            </button>
+            <button class="btn-generar btn-excel"
+              (click)="descargarExcelKardex()"
+              [disabled]="!kardex()"
+              matTooltip="Descargar Excel">
+              <mat-icon>download</mat-icon>
+              Excel
             </button>
           </div>
         </div>

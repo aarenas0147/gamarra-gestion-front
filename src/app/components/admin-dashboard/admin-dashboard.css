@@ -480,6 +480,14 @@
   height: 18px;
 }
 
+.btn-excel {
+  background: #1E5C3A !important;
+}
+
+.btn-excel:hover:not(:disabled) {
+  background: #164a2e !important;
+}
+
 /* ── REPORTE VENTAS RESULTADO ── */
 .reporte-ventas-resultado {
   display: flex;
