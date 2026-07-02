@@ -1,12 +1,15 @@
 name: Gamarra Gestion - Frontend CI
 
 on:
+  push:
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
@@ -28,3 +31,34 @@ jobs:
     # Simula la compilación final. Si hay un error de TypeScript, el pipeline fallará
     - name: Construir proyecto (Build)
       run: npm run build -- --configuration=production
+
+    # Verifica que la imagen Docker se construye correctamente
+    # - name: Construir imagen Docker
+    #   run: docker build -t gamarra-frontend:${{ github.sha }} .
+
+    # Escanea la imagen en busca de vulnerabilidades conocidas
+    - name: Escanear vulnerabilidades (Trivy)
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: gamarra-frontend:${{ github.sha }}
+        format: table
+        exit-code: 0
+        severity: HIGH,CRITICAL
+
+    # Solo en push a master: sube la imagen a Docker Hub
+    # - name: Login a Docker Hub
+    #   if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    #   uses: docker/login-action@v3
+    #   with:
+    #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # - name: Publicar imagen en Docker Hub
+    #   if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    #   run: |
+    #     docker tag gamarra-frontend:${{ github.sha }} \
+    #       ${{ secrets.DOCKERHUB_USERNAME }}/gamarra-frontend:latest
+    #     docker tag gamarra-frontend:${{ github.sha }} \
+    #       ${{ secrets.DOCKERHUB_USERNAME }}/gamarra-frontend:${{ github.sha }}
+    #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/gamarra-frontend:latest
+    #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/gamarra-frontend:${{ github.sha }}
