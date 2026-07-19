@@ -1,0 +1,112 @@
+<div class="modal-wrapper">
+
+  <div class="modal-header">
+    <div class="modal-titulo">
+      <mat-icon>person_add</mat-icon>
+      <h2>Nuevo Cliente</h2>
+    </div>
+    <button mat-icon-button class="btn-cerrar" (click)="cancelar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-divider />
+
+  <div class="modal-body">
+
+    <!-- Tipo y número de documento -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tipo de documento <span class="req">*</span></label>
+        <select class="form-select" [(ngModel)]="form.tipoDocumento">
+          @for (tipo of tiposDocumento; track tipo) {
+            <option [value]="tipo">{{ tipo }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group grow">
+        <label class="form-label">Número de documento <span class="req">*</span></label>
+        <input
+          class="form-input"
+          type="text"
+          placeholder="Ej: 45678912"
+          [(ngModel)]="form.numeroDocumento"
+          maxlength="15"
+        />
+      </div>
+    </div>
+
+    <!-- Razón social / Nombres -->
+    <div class="form-group">
+      <label class="form-label">
+        {{ form.tipoDocumento === 'RUC' ? 'Razón social' : 'Nombres y apellidos' }}
+        <span class="req">*</span>
+      </label>
+      <input
+        class="form-input"
+        type="text"
+        [placeholder]="form.tipoDocumento === 'RUC'
+          ? 'Ej: Confecciones García S.A.C.'
+          : 'Ej: María López Torres'"
+        [(ngModel)]="form.razonSocial"
+        maxlength="150"
+      />
+    </div>
+
+    <!-- Teléfono -->
+    <div class="form-group">
+      <label class="form-label">Teléfono</label>
+      <input
+        class="form-input"
+        type="tel"
+        placeholder="Ej: 987654321"
+        [(ngModel)]="form.telefono"
+        maxlength="15"
+      />
+    </div>
+
+    <!-- Dirección -->
+    <div class="form-group">
+      <label class="form-label">Dirección</label>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="Ej: Av. Aviación 2405, La Victoria"
+        [(ngModel)]="form.direccion"
+        maxlength="255"
+      />
+    </div>
+
+    <!-- Error -->
+    @if (error()) {
+      <div class="form-error">
+        <mat-icon>error_outline</mat-icon>
+        {{ error() }}
+      </div>
+    }
+
+  </div>
+
+  <mat-divider />
+
+  <div class="modal-footer">
+    <button class="btn-cancelar" (click)="cancelar()">
+      Cancelar
+    </button>
+    <button
+      class="btn-guardar"
+      [disabled]="!puedeGuardar()"
+      (click)="guardar()"
+    >
+      @if (guardando()) {
+        <mat-progress-spinner diameter="18" mode="indeterminate" />
+        Guardando...
+      } @else {
+        <mat-icon>save</mat-icon>
+        Registrar cliente
+      }
+    </button>
+  </div>
+
+</div>
