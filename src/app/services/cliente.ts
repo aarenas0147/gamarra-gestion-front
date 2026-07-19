@@ -12,10 +12,19 @@ export interface ClienteResponse {
   direccion: string;
 }
 
+export interface ClienteRequest {
+  tipoDocumento: string;
+  numeroDocumento: string;
+  razonSocial: string;
+  telefono?: string;
+  direccion?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService {
+
   private apiUrl = `${environment.apiUrl}/clientes`;
 
   constructor(private http: HttpClient) {}
@@ -24,5 +33,9 @@ export class ClienteService {
     return this.http.get<ClienteResponse>(
       `${this.apiUrl}/documento/${numero}`
     );
+  }
+
+  crear(request: ClienteRequest): Observable<ClienteResponse> {
+    return this.http.post<ClienteResponse>(this.apiUrl, request);
   }
 }

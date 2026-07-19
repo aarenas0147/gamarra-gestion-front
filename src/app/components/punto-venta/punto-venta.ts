@@ -23,6 +23,7 @@ import { ProductoService, ProductoResponse } from '../../services/producto';
 import { VentaService, VentaResponse } from '../../services/venta';
 import { ClienteService, ClienteResponse } from '../../services/cliente';
 import { Auth } from '../../services/auth';
+import { ClienteModalComponent, ClienteModalData } from '../cliente-modal/cliente-modal';
 
 export interface ItemCarrito {
   producto: ProductoResponse;
@@ -114,7 +115,8 @@ export class PuntoVentaComponent implements OnInit {
     private ventaService: VentaService,
     private clienteService: ClienteService,
     private auth: Auth,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -246,12 +248,45 @@ export class PuntoVentaComponent implements OnInit {
           'OK', { duration: 2000 }
         );
       },
-      error: () => {
-        this.cliente.set(null);
+      error: (err) => {
         this.buscandoCliente.set(false);
+
+        if (err.status === 404) {
+          // Cliente no existe: ofrecer crear uno nuevo
+          this.snackBar.open(
+            'Cliente no encontrado',
+            'Registrar nuevo',
+            { duration: 5000 }
+          ).onAction().subscribe(() => {
+            this.abrirModalNuevoCliente();
+          });
+        } else {
+          this.snackBar.open(
+            'Error al buscar el cliente',
+            'Cerrar', { duration: 3000 }
+          );
+        }
+      }
+    });
+  }
+
+  abrirModalNuevoCliente(): void {
+    const data: ClienteModalData = {
+      numeroDocumentoPrevio: this.documentoCliente
+    };
+
+    const dialogRef = this.dialog.open(ClienteModalComponent, {
+      data,
+      disableClose: true,
+      panelClass: 'gamarra-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe((clienteCreado) => {
+      if (clienteCreado) {
+        this.cliente.set(clienteCreado);
         this.snackBar.open(
-          'Cliente no encontrado. Verifique el documento.',
-          'Cerrar', { duration: 3000 }
+          `✓ Cliente ${clienteCreado.numeroDocumento} registrado`,
+          'OK', { duration: 3000, panelClass: 'snack-success' }
         );
       }
     });

@@ -278,3 +278,9 @@
   .btn-label     { display: none; }
   .usuario-sesion span:not(mat-icon) { display: none; }
 }
+
+/* Dialog global de Gamarra Gestión */
+.gamarra-dialog .mat-mdc-dialog-container {
+  border-radius: 12px !important;
+  padding: 0 !important;
+}
