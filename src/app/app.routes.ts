@@ -34,6 +34,15 @@ export const routes: Routes = [
     canActivate: [noAuthGuard]
   },
 
+  // Registro — bloqueado si ya está autenticado
+  {
+    path: 'registro',
+    loadComponent: () =>
+      import('./components/registro/registro')
+        .then(m => m.RegistroComponent),
+    canActivate: [noAuthGuard]
+  },
+
   // Panel de almacén — solo ENCARGADO_ALMACEN o ADMINISTRADOR
   {
     path: 'almacen',

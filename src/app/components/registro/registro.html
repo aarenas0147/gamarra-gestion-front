@@ -1,0 +1,241 @@
+<div class="registro-container">
+  <div class="registro-card animate-fade-in">
+
+    <!-- ── PANTALLA DE ÉXITO ── -->
+    @if (exitoso()) {
+      <div class="exito-screen">
+        <div class="exito-icono">✅</div>
+        <h2>¡Cuenta creada!</h2>
+        <p>{{ mensajeExito() }}</p>
+        <button class="btn-primary" (click)="irAlLogin()">
+          🔒 Iniciar sesión ahora
+        </button>
+      </div>
+
+    } @else {
+
+      <!-- HEADER -->
+      <div class="registro-header">
+        <div class="login-logo">📦 GamarraGestión</div>
+        <h1>Crear cuenta</h1>
+        <p>Únete y compra las mejores prendas de Gamarra</p>
+      </div>
+
+      <!-- INDICADOR DE PASOS -->
+      <div class="pasos-indicador">
+        <div class="paso" [class.activo]="pasoActual() === 1"
+          [class.completado]="pasoActual() === 2">
+          <span class="paso-num">
+            @if (pasoActual() === 2) { ✓ } @else { 1 }
+          </span>
+          <span class="paso-label">Acceso</span>
+        </div>
+        <div class="paso-linea" [class.completada]="pasoActual() === 2"></div>
+        <div class="paso" [class.activo]="pasoActual() === 2">
+          <span class="paso-num">2</span>
+          <span class="paso-label">Perfil</span>
+        </div>
+      </div>
+
+      <!-- ── PASO 1: DATOS DE ACCESO ── -->
+      @if (pasoActual() === 1) {
+        <div class="form-paso">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombres <span class="req">*</span></label>
+              <input
+                class="form-input"
+                type="text"
+                placeholder="Ej: María"
+                [(ngModel)]="form.nombres"
+                maxlength="100"
+              />
+            </div>
+            <div class="form-group">
+              <label>Apellidos <span class="req">*</span></label>
+              <input
+                class="form-input"
+                type="text"
+                placeholder="Ej: López Torres"
+                [(ngModel)]="form.apellidos"
+                maxlength="100"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Correo electrónico <span class="req">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">📧</span>
+              <input
+                class="form-input with-icon"
+                type="email"
+                placeholder="ejemplo@correo.com"
+                [(ngModel)]="form.correo"
+                maxlength="150"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña <span class="req">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔒</span>
+              <input
+                class="form-input with-icon"
+                [type]="mostrarPassword ? 'text' : 'password'"
+                placeholder="Mínimo 8 caracteres"
+                [(ngModel)]="form.password"
+                maxlength="100"
+              />
+              <button type="button" class="toggle-password"
+                (click)="togglePassword()">
+                {{ mostrarPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+            @if (form.password && form.password.length < 8) {
+              <small class="error-text">
+                Mínimo 8 caracteres
+              </small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Confirmar contraseña <span class="req">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔒</span>
+              <input
+                class="form-input with-icon"
+                [type]="mostrarConfirmar ? 'text' : 'password'"
+                placeholder="Repite tu contraseña"
+                [(ngModel)]="confirmarPassword"
+                maxlength="100"
+              />
+              <button type="button" class="toggle-password"
+                (click)="toggleConfirmar()">
+                {{ mostrarConfirmar ? '🙈' : '👁️' }}
+              </button>
+            </div>
+            @if (confirmarPassword && !passwordsCoinciden()) {
+              <small class="error-text">
+                Las contraseñas no coinciden
+              </small>
+            }
+          </div>
+
+          @if (errorMessage()) {
+            <div class="auth-error-alert">⚠️ {{ errorMessage() }}</div>
+          }
+
+          <button class="btn-primary"
+            [disabled]="!puedeSiguiente()"
+            (click)="irPaso2()">
+            Continuar →
+          </button>
+
+        </div>
+      }
+
+      <!-- ── PASO 2: DATOS DEL PERFIL ── -->
+      @if (pasoActual() === 2) {
+        <div class="form-paso">
+
+          <p class="paso-desc">
+            Estos datos son opcionales pero necesarios para emitir comprobantes.
+            Puedes completarlos después.
+          </p>
+
+          <div class="form-row">
+            <div class="form-group tipo-doc">
+              <label>Tipo</label>
+              <select class="form-select" [(ngModel)]="form.tipoDocumento">
+                @for (tipo of tiposDocumento; track tipo) {
+                  <option [value]="tipo">{{ tipo }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group grow">
+              <label>Número de documento</label>
+              <input
+                class="form-input"
+                type="text"
+                placeholder="Ej: 45678912"
+                [(ngModel)]="form.numeroDocumento"
+                maxlength="15"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>
+              {{ form.tipoDocumento === 'RUC'
+                ? 'Razón social'
+                : 'Nombres completos (para comprobante)' }}
+            </label>
+            <input
+              class="form-input"
+              type="text"
+              [placeholder]="form.tipoDocumento === 'RUC'
+                ? 'Ej: Confecciones García S.A.C.'
+                : 'Ej: María López Torres'"
+              [(ngModel)]="form.razonSocial"
+              maxlength="150"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input
+              class="form-input"
+              type="tel"
+              placeholder="Ej: 987654321"
+              [(ngModel)]="form.telefono"
+              maxlength="15"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Dirección</label>
+            <input
+              class="form-input"
+              type="text"
+              placeholder="Ej: Av. Aviación 2405, La Victoria"
+              [(ngModel)]="form.direccion"
+              maxlength="255"
+            />
+          </div>
+
+          @if (errorMessage()) {
+            <div class="auth-error-alert">⚠️ {{ errorMessage() }}</div>
+          }
+
+          <div class="botones-paso2">
+            <button class="btn-secundario" (click)="irPaso1()">
+              ← Volver
+            </button>
+            <button class="btn-primary"
+              [disabled]="!puedeRegistrar()"
+              (click)="onSubmit()">
+              @if (cargando()) {
+                <mat-progress-spinner diameter="18" mode="indeterminate"/>
+                Creando cuenta...
+              } @else {
+                ✅ Crear mi cuenta
+              }
+            </button>
+          </div>
+
+        </div>
+      }
+
+      <!-- FOOTER -->
+      <div class="registro-footer">
+        ¿Ya tienes cuenta?
+        <a routerLink="/login" class="link-login">Inicia sesión aquí</a>
+      </div>
+
+    }
+
+  </div>
+</div>

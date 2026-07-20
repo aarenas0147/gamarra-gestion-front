@@ -3,6 +3,27 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export interface RegistroRequest {
+  nombres: string;
+  apellidos: string;
+  correo: string;
+  password: string;
+  tipoDocumento?: string;
+  numeroDocumento?: string;
+  razonSocial?: string;
+  telefono?: string;
+  direccion?: string;
+}
+
+export interface RegistroResponse {
+  idUsuario: number;
+  nombreCompleto: string;
+  correo: string;
+  rol: string;
+  idCliente: number;
+  mensaje: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,6 +48,12 @@ export class Auth {
           localStorage.setItem(this.NOMBRE_KEY, response.nombreCompleto);
         }
       })
+    );
+  }
+
+  registro(request: RegistroRequest): Observable<RegistroResponse> {
+    return this.http.post<RegistroResponse>(
+      `${this.apiUrl}/registro`, request
     );
   }
 
